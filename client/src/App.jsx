@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
+import { validateDate } from './utils/dateHelper';
 
 function App() {
   const [day, setDay] = useState('');
@@ -7,7 +8,6 @@ function App() {
   const [year, setYear] = useState('');
   const [result, setResult] = useState(null);
 
-  // Hàm "Clear" xóa trắng các trường văn bản
   const handleClear = () => {
     setDay('');
     setMonth('');
@@ -15,79 +15,94 @@ function App() {
     setResult(null);
   };
 
-  // Hàm "Close" hiển thị hộp thoại xác nhận
   const handleClose = () => {
-    if (window.confirm('Are you sure to exit?')) {
+    if (window.confirm('Are you sure you want to exit?')) {
       window.close();
     }
   };
 
-  // Hàm "Check" gọi tới backend API
-  const handleCheck = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/api/check-date', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ day, month, year })
-      });
-      const data = await response.json();
-      setResult(data);
-    } catch (error) {
-      setResult({ success: false, message: 'Network Error: Cannot connect to server.' });
-    }
+  const handleCheck = (e) => {
+    if (e) e.preventDefault();
+    const result = validateDate(day, month, year);
+    setResult(result);
   };
 
   return (
-    <div className="app-window">
-      <div className="window-header">
-        <span className="window-title">Date Checker</span>
-        <button className="close-btn" onClick={handleClose}>✕</button>
+    <div className="winform-window">
+      {/* Title bar (Form1) */}
+      <div className="winform-titlebar">
+        <div className="winform-title">
+          <span className="winform-title-icon">
+            <svg viewBox="0 0 16 16" width="16" height="16">
+              <rect x="2" y="2" width="12" height="12" rx="1" fill="#f60" stroke="#fff" strokeWidth="1" />
+              <rect x="4" y="4" width="3" height="3" fill="#fff" />
+              <rect x="9" y="4" width="3" height="3" fill="#fff" />
+              <rect x="4" y="9" width="8" height="3" fill="#fff" />
+            </svg>
+          </span>
+          Form1
+        </div>
+        <div className="winform-controls">
+          <button className="winform-control-btn disabled" aria-label="Minimize" tabIndex="-1">−</button>
+          <button className="winform-control-btn disabled" aria-label="Maximize" tabIndex="-1">□</button>
+          <button className="winform-control-btn close-btn" onClick={handleClose} aria-label="Close">✕</button>
+        </div>
       </div>
 
-      <div className="window-content">
-        <div className="logo-container">
-          <img src="./assets/Logo_Trường_Đại_học_FPT.svg.jpg" alt="" className="logo-img" />
-          <div className="logo-subtext">DREAM OF INNOVATION</div>
-        </div>
+      {/* Main client area */}
+      <div className="winform-client">
+        <h1 className="winform-header">Date Time Checker</h1>
 
-        <h1 className="app-title">Date Time Checker</h1>
+        <form className="winform-form" onSubmit={handleCheck}>
+          <div className="winform-row">
+            <label htmlFor="day-input" className="winform-label">Day</label>
+            <input
+              id="day-input"
+              type="text"
+              className="winform-input"
+              value={day}
+              onChange={(e) => setDay(e.target.value)}
+            />
+          </div>
+          <div className="winform-row">
+            <label htmlFor="month-input" className="winform-label">Month</label>
+            <input
+              id="month-input"
+              type="text"
+              className="winform-input"
+              value={month}
+              onChange={(e) => setMonth(e.target.value)}
+            />
+          </div>
+          <div className="winform-row">
+            <label htmlFor="year-input" className="winform-label">Year</label>
+            <input
+              id="year-input"
+              type="text"
+              className="winform-input"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+            />
+          </div>
 
-        <div className="form-group">
-          <label>Day</label>
-          <input
-            id="day-input"
-            type="text"
-            placeholder="e.g. 15"
-            value={day}
-            onChange={(e) => setDay(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label>Month</label>
-          <input
-            id="month-input"
-            type="text"
-            placeholder="e.g. 6"
-            value={month}
-            onChange={(e) => setMonth(e.target.value)}
-          />
-        </div>
-        <div className="form-group">
-          <label>Year</label>
-          <input
-            id="year-input"
-            type="text"
-            placeholder="e.g. 2024"
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-          />
-        </div>
+          <div className="winform-actions">
+            <button
+              type="button"
+              className="winform-btn btn-clear"
+              onClick={handleClear}
+            >
+              Clear
+            </button>
+            <button
+              type="submit"
+              className="winform-btn btn-check"
+            >
+              Check
+            </button>
+          </div>
+        </form>
 
-        <div className="button-group">
-          <button className="btn-clear" onClick={handleClear}>Clear</button>
-          <button className="btn-check" onClick={handleCheck}>Check</button>
-        </div>
-
+        {/* Result box — kept for mobile/E2E test compatibility */}
         {result && (
           <div className={`result-box ${result.success ? 'success' : 'error'}`}>
             {result.success ? '✓ ' : '✗ '}

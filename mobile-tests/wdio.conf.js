@@ -54,11 +54,11 @@ exports.config = {
         // capabilities for local Appium web tests on an Android Emulator
         platformName: 'Android',
         browserName: 'Chrome',
-        'appium:deviceName': 'Android GoogleAPI Emulator',
+        'appium:deviceName': 'Pixel 7',
         'appium:platformVersion': '13.0',
         'appium:automationName': 'UiAutomator2',
         'appium:chromedriverAutodownload': true,
-        'appium:chromedriverExecutable': 'E:/chromedriver-win64/chromedriver.exe',
+        'appium:chromedriverExecutable': `${__dirname}/chromedriver109/chromedriver.exe`,
         'wdio:enforceWebDriverClassic': true,
     }],
 
