@@ -11,9 +11,8 @@ function daysInMonth(year, month) {
     if ([4, 6, 9, 11].includes(month)) return 30;
     if (month === 2) {
         if (year % 400 === 0) return 29;  // Chia hết 400 → nhuận
-        if (year % 4 === 0) return 29;
         if (year % 100 === 0) return 28;  // Chia hết 100 (không 400) → KHÔNG nhuận
-        // if (year % 4 === 0)   return 29;  // Chia hết 4 (không 100) → nhuận
+        if (year % 4 === 0)   return 29;  // Chia hết 4 (không 100) → nhuận
         return 28;                         // Còn lại → không nhuận
     }
     return 0;
